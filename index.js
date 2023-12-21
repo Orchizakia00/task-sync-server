@@ -26,7 +26,9 @@ async function run() {
     try {
 
         const userCollection = client.db('taskDB').collection('users');
+        const taskCollection = client.db('taskDB').collection('tasks');
 
+        // users api
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email }
@@ -41,6 +43,18 @@ async function run() {
 
         app.get('/users', async (req, res) => {
             const result = await userCollection.find().toArray();
+            res.send(result);
+        })
+
+        // tasks api
+        app.post('/tasks', async (req, res) => {
+            const data = req.body;
+            const result = await taskCollection.insertOne(data);
+            res.send(result);
+        })
+
+        app.get('/tasks', async (req, res) => {
+            const result = await taskCollection.find().toArray();
             res.send(result);
         })
 
