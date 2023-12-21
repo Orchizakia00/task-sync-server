@@ -54,7 +54,11 @@ async function run() {
         })
 
         app.get('/tasks', async (req, res) => {
-            const result = await taskCollection.find().toArray();
+            let query = {};
+            if (req.query?.email) {
+                query = { email: req.query.email }
+            }
+            const result = await taskCollection.find(query).toArray();
             res.send(result);
         })
 
@@ -68,7 +72,7 @@ async function run() {
         app.put('/tasks/:id', async (req, res) => {
             const { id } = req.params;
             const query = { _id: new ObjectId(id) };
-            const updateDoc = { $set: { status: 'ongoing' } };
+            const updateDoc = { $set: { status: req.body.status } };
             const result = await taskCollection.updateOne(query, updateDoc);
             res.send(result);
         });
