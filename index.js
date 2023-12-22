@@ -77,6 +77,22 @@ async function run() {
             res.send(result);
         });
 
+        app.patch('/task/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const updateTask = req.body;
+            const updatedDoc = {
+                $set: {
+                    title: updateTask.title,
+                    priority: updateTask.priority,
+                    deadline: updateTask.deadline,
+                    description: updateTask.description,
+                }
+            }
+            const result = await taskCollection.updateOne(filter, updatedDoc);
+            res.send(result);
+        })
+
         app.delete('/tasks/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
@@ -85,8 +101,8 @@ async function run() {
         })
 
 
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // await client.db("admin").command({ ping: 1 });
+        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
